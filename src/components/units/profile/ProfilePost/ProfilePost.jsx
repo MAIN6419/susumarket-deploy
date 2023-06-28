@@ -141,7 +141,7 @@ export default function ProfilePost({
                   userData={userData}
                 />
               ))}
-              <div ref={ref}>스크롤</div>
+              <div ref={ref}></div>
             </ProfilePostUl>
           )}
         </>
