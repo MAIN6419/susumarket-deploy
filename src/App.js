@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlobalStyle } from "./GlobalStyle";
 import Router from "./routes/Router";
 import { UserContext } from "./context/UserContext.jsx";
 import { ModalContext } from "./context/ModalContext.jsx";
+import { detectWebpSupport } from "./library/checkWebpSupport";
 function App() {
-  const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken")||null);
+  const [accessToken, setAccessToken] = useState(
+    localStorage.getItem("accessToken") || null,
+  );
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [isOpenPostModal, setIsOpenPostModal] = useState(false);
+
+  useEffect(() => {
+    detectWebpSupport();
+  }, []);
 
   return (
     <>
@@ -17,16 +24,16 @@ function App() {
           setAccessToken,
         }}
       >
-        <ModalContext.Provider
-          value={{
-            isOpenConfirmModal,
-            setIsOpenConfirmModal,
-            isOpenPostModal,
-            setIsOpenPostModal,
-          }}
-        >
-          <Router />
-        </ModalContext.Provider>
+          <ModalContext.Provider
+            value={{
+              isOpenConfirmModal,
+              setIsOpenConfirmModal,
+              isOpenPostModal,
+              setIsOpenPostModal,
+            }}
+          >
+            <Router />
+          </ModalContext.Provider>
       </UserContext.Provider>
     </>
   );

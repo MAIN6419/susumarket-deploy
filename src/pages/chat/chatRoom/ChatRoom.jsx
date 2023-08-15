@@ -15,13 +15,16 @@ import {
   ChatRoomBtnSpan,
 } from "./chatRoom.style";
 import userImg from "../../../img/basic-profile.svg";
-import catImg from "../../../img/cat.jpg";
+import catImg from "../../../img/cat.svg";
+import userImgWebp from "../../../img/webp/ProfileImg.webp";
+import catImgWebp from "../../../img/webp/cat.webp";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ModalContext } from "../../../context/ModalContext";
 import PostModal from "../../../components/commons/postModal/PostModal";
 import NewTopHeader from "../../../components/commons/newTopHeader/NewTopHeader";
 import ConfirmModal from "../../../components/commons/confirmModal/confirmModal";
 import TopButton from "../../../components/commons/topButton/TopButton";
+import { resolveWebp } from "../../../library/checkWebpSupport";
 
 export default function ChatRoom() {
   const [msgValue, setMsgValue] = useState("");
@@ -45,23 +48,21 @@ export default function ChatRoom() {
 
   const location = useLocation();
   const navgate = useNavigate();
-  const pathnameNum = location.pathname.slice(10, 11);
+  const pathname = location.pathname.slice(10, location.pathname.length);
 
-  function onChangeMsg(e) {
+  const onChangeMsg = (e) => {
     setMsgValue(e.target.value);
-  }
+  };
 
-  function onClickExit() {
+  const onClickExit = () => {
     navgate("/chatList");
     setIsOpenConfirmModal(false);
     setIsOpenPostModal(false);
-  }
-
-  function onSubmitMsg(e) {
+  };
+  const onSubmitMsg = (e) => {
     e.preventDefault();
     setMsgValue("");
-  }
-
+  };
   return (
     <>
       <NewTopHeader
@@ -69,24 +70,19 @@ export default function ChatRoom() {
         right={"more"}
         middle={"text"}
         title={"채팅방"}
-        text={
-          pathnameNum === "1"
-            ? "coolll_bob_ross"
-            : pathnameNum === "2"
-            ? "그림쟁이"
-            : pathnameNum === "3"
-            ? "수제 핸드 메이드 가방"
-            : "귀여운 수제 키링"
-        }
+        text={pathname}
         onClickButton={() => setIsOpenPostModal(true)}
       />
 
       <ChatRoomWrapper height={height}>
         <ChatRoomUl>
-          {pathnameNum === "1" ? (
+          {pathname === "cooll_bob_ross" ? (
             <>
               <ChatRoomLi>
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>자유롭게 대화 하세요~</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
@@ -96,7 +92,10 @@ export default function ChatRoom() {
           ) : (
             <>
               <ChatRoomLi>
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>그림 요청하고 싶어요.</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
@@ -104,7 +103,10 @@ export default function ChatRoom() {
               </ChatRoomLi>
 
               <ChatRoomLi className="sent">
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>네. 어떤 그림인지 말해주세요.</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
@@ -112,15 +114,24 @@ export default function ChatRoom() {
               </ChatRoomLi>
 
               <ChatRoomLi>
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper className="imgMsg">
-                  <ChatRoomImgMsg src={catImg} alt="이미지 메세지" />
+                  <ChatRoomImgMsg
+                    src={resolveWebp(catImgWebp, catImg)}
+                    alt="이미지 메세지"
+                  />
                 </ChatRoomMsgWrapper>
                 <ChatRoomDate dateTime="2023-06-10">12:30</ChatRoomDate>
               </ChatRoomLi>
 
               <ChatRoomLi>
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>
                     저희 고양이 사진인데 이거 가능한가요?
@@ -130,7 +141,10 @@ export default function ChatRoom() {
               </ChatRoomLi>
 
               <ChatRoomLi className="sent">
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>네, 가능합니다!</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
@@ -138,7 +152,10 @@ export default function ChatRoom() {
               </ChatRoomLi>
 
               <ChatRoomLi>
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>그럼 그림 부탁드릴게요~</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
@@ -146,7 +163,10 @@ export default function ChatRoom() {
               </ChatRoomLi>
 
               <ChatRoomLi className="sent">
-                <ChatRoomUserImg src={userImg} alt="유저 프로필 이미지" />
+                <ChatRoomUserImg
+                  src={resolveWebp(userImgWebp, userImg)}
+                  alt="유저 프로필 이미지"
+                />
                 <ChatRoomMsgWrapper>
                   <ChatRoomMsg>네, 그림 요청 받았습니다.</ChatRoomMsg>
                 </ChatRoomMsgWrapper>
