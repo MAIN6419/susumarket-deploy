@@ -38,12 +38,23 @@ export default function PostCard({
 
   // 게시물 제거
   const onClickRemovePost = async () => {
-    try {
-      await postDeleteAPI(post.id);
-      setPostData((prev) => prev.filter((prev) => prev.id !== post.id));
-    } catch (error) {
-      if (error.response.data.message === "존재하지 않는 게시글입니다.") {
+    if (!isPostDetail) {
+      try {
+        await postDeleteAPI(post.id);
         setPostData((prev) => prev.filter((prev) => prev.id !== post.id));
+      } catch (error) {
+        if (error.response.data.message === "존재하지 않는 게시글입니다.") {
+          setPostData((prev) => prev.filter((prev) => prev.id !== post.id));
+        }
+      }
+    } else {
+      try {
+        await postDeleteAPI(post.id);
+        navigate("/profile");
+      } catch (error) {
+        if (error.response.data.message === "존재하지 않는 게시글입니다.") {
+          navigate("/profile");
+        }
       }
     }
   };
@@ -92,17 +103,22 @@ export default function PostCard({
 
   // 더보기 버튼
   const onClickMore = () => {
-    if (post.author.accountname === account)
+    if (post.author.accountname === account) {
       if (!isPostDetail) {
         // post 모달창 버튼 props 지정
         settingPostModalProps([
           {
             name: "삭제",
             func: () => {
-              onClickButton("정말 삭제하시겠습니까?", "삭제", async () => {
-                closeModal();
-                await onClickRemovePost();
-              });
+              onClickButton(
+                "정말 삭제하시겠습니까?",
+                "삭제",
+                "취소",
+                async () => {
+                  closeModal();
+                  await onClickRemovePost();
+                },
+              );
             },
           },
           {
@@ -125,10 +141,15 @@ export default function PostCard({
           {
             name: "삭제",
             func: () => {
-              onClickButton("정말 삭제하시겠습니까?", "삭제", async () => {
-                closeModal();
-                await onClickRemovePost();
-              });
+              onClickButton(
+                "정말 삭제하시겠습니까?",
+                "삭제",
+                "취소",
+                async () => {
+                  closeModal();
+                  await onClickRemovePost();
+                },
+              );
             },
           },
           {
@@ -140,17 +161,22 @@ export default function PostCard({
           },
         ]);
       }
-    else {
+    } else {
       if (!isPostDetail) {
         // post 모달창 버튼 props 지정
         settingPostModalProps([
           {
             name: "신고",
             func: () => {
-              onClickButton("정말 신고 하시겠습니까?", "신고", async () => {
-                closeModal();
-                await onClickReportPost();
-              });
+              onClickButton(
+                "정말 신고 하시겠습니까?",
+                "신고",
+                "취소",
+                async () => {
+                  closeModal();
+                  await onClickReportPost();
+                },
+              );
             },
           },
           {
@@ -167,10 +193,15 @@ export default function PostCard({
           {
             name: "신고",
             func: () => {
-              onClickButton("정말 신고 하시겠습니까?", "신고", async () => {
-                closeModal();
-                await onClickReportPost();
-              });
+              onClickButton(
+                "정말 신고 하시겠습니까?",
+                "신고",
+                "취소",
+                async () => {
+                  closeModal();
+                  await onClickReportPost();
+                },
+              );
             },
           },
         ]);

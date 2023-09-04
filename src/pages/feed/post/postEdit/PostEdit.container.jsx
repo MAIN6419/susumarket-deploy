@@ -17,6 +17,7 @@ const PostEditContainer = () => {
     textRef.current.style.height = "auto";
     textRef.current.style.height = textRef.current.scrollHeight + "px";
   }, []);
+
   const [isInvalidPage, setIsInValidPage] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [postContent, setPostContent] = useState("");
@@ -25,19 +26,17 @@ const PostEditContainer = () => {
   const [postImages, setPostImages] = useState([]);
   const [imgArray, setImgArray] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [disabled, setDisabled] = useState(true);
+  const [data, setData] = useState(null);
   const { postId } = useParams();
   const myProfile = useAuth();
 
   // 이미지 내 X버튼 클릭 시 미리보기, API 전송 이미지 모두 삭제 처리
   const handleDeleteImage = useCallback(
     (id) => {
-      const updatedImgArray = imgArray.filter((_, index) => index !== id);
-      setImgArray(updatedImgArray);
-      const updatedPostArray = postImages.filter((_, index) => index !== id);
-      setPostImages(updatedPostArray);
-      const updateFileImg = imgFiles.filter((_, index) => index !== id);
-      setImgFiles(updateFileImg);
+      setImgArray((prev) => prev.filter((_, index) => index !== id));
+      setPostImages((prev) => prev.filter((_, index) => index !== id));
+      setImgFiles((prev) => prev.filter((_, index) => index !== id));
     },
     [imgArray, postImages, imgFiles],
   );
@@ -46,7 +45,7 @@ const PostEditContainer = () => {
     const fetchPost = async () => {
       try {
         const postData = await postDetailAPI(postId);
-
+        setData(postData);
         // 게시물의 텍스트 설정
         setPostContent(postData.content);
         setAccountname(postData.author.accountname);
@@ -54,6 +53,13 @@ const PostEditContainer = () => {
         if (postData.image !== "") {
           setPostImages(postData.image.toString().split(","));
           setImgArray(postData.image.toString().split(","));
+          // 기존 이미지 배열과 요소의 길이를 맞춰주기 위해 공백 문자 삽입
+          setImgFiles(
+            postData.image
+              .toString()
+              .split(",")
+              .map((_) => ""),
+          );
         }
         setIsInValidPage(false);
         setIsLoading(false);
@@ -75,6 +81,30 @@ const PostEditContainer = () => {
     }
   }, [accountname]);
 
+  useEffect(() => {
+    if (!postContent && !imgArray.length) {
+      setDisabled(true);
+      return;
+    }
+    if (data) {
+      const prevPostContent = data.content;
+      const prevImgArray = data.image.toString().split(",");
+      if (
+        postContent !== prevPostContent ||
+        JSON.stringify(imgArray) !==
+          JSON.stringify(prevImgArray[0] === "" ? [] : prevImgArray)
+      ) {
+        setDisabled(false);
+      } else if (
+        postContent === prevPostContent &&
+        JSON.stringify(imgArray) ===
+          JSON.stringify(prevImgArray[0] === "" ? [] : prevImgArray)
+      ) {
+        setDisabled(true);
+      }
+    }
+  }, [postContent, imgArray, data]);
+
   // 이미지 변경 사항 확인 후, 상태 변경
   const handleImageChange = useCallback(
     (e) => {
@@ -93,16 +123,16 @@ const PostEditContainer = () => {
   );
 
   const uploadImages = async () => {
-    console.log(imgFiles);
-    if (imgFiles.length === 0) return [...postImages];
-    const formData = new FormData();
-
-    for (let i = 0; i < imgFiles.length; i++) {
-      formData.append("image", imgFiles[i]);
+    // 비어있는 이미지파일 제거
+    for (const i in imgFiles) {
+      if (imgFiles[i] === "") {
+        imgFiles.splice(i, 1);
+      }
     }
 
     try {
-      const imageURLs = await mutiImgUploadAPI(formData); // 이미지 업로드 함수 호출
+      const imageURLs = await mutiImgUploadAPI(imgFiles); // 이미지 업로드 함수 호출
+      if (!imageURLs) return [...postImages];
       return [...postImages, imageURLs]; // 기존 postImages 배열에 업로드된 이미지 URL 추가하여 반환
     } catch (error) {
       console.error(error);
@@ -110,11 +140,11 @@ const PostEditContainer = () => {
   };
 
   // // 게시글 수정 api
-  const handlePostEdit = useCallback(async () => {
+  const handlePostEdit = async () => {
     const imgUrls = await uploadImages();
     await postEditAPI(postId, postContent, imgUrls);
     navigate("/profile");
-  }, [postId, postContent, uploadImages]);
+  };
 
   const handleFileButton = useCallback(() => {
     fileInputRef.current.click();
@@ -128,7 +158,6 @@ const PostEditContainer = () => {
       isLoading={isLoading}
       profileImage={profileImage}
       postContent={postContent}
-      accountname={accountname}
       imgArray={imgArray}
       textRef={textRef}
       fileInputRef={fileInputRef}
@@ -138,6 +167,7 @@ const PostEditContainer = () => {
       handlePostEdit={handlePostEdit}
       handleFileButton={handleFileButton}
       setPostContent={setPostContent}
+      disabled={disabled}
     />
   );
 };
