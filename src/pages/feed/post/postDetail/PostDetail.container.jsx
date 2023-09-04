@@ -14,6 +14,7 @@ import {
   commentReportAPI,
 } from "../../../../API/commentAPI";
 import PostDetailUI from "./PostDetail.presenter";
+import { sweetToast } from "../../../../library/sweetAlert/sweetAlert";
 
 export default function PostDetail() {
   const [postModalProps, setPostModalProps] = useState([]);
@@ -83,7 +84,7 @@ export default function PostDetail() {
       await fetchComments();
     } catch (error) {
       if (error.response.data.message === "존재하지 않는 게시글 입니다.") {
-        alert(error.response.data.message);
+        sweetToast(error.response.data.message, "waring");
         navigate("/post");
       }
       console.error(error);
@@ -129,7 +130,7 @@ export default function PostDetail() {
         setComments(comments.filter((comment) => comment.id !== commentId));
       } catch (error) {
         if (error.response.data.message === "존재하지 않는 게시글 입니다.") {
-          alert(error.response.data.message);
+          sweetToast(error.response.data.message, "warning");
           navigate("/post");
         }
         console.error(error);
@@ -144,7 +145,7 @@ export default function PostDetail() {
         await commentReportAPI(postId, commentId);
       } catch (error) {
         if (error.response.data.message === "댓글이 존재하지 않습니다.") {
-          alert(error.response.data.message);
+          sweetToast(error.response.data.message, "warning");
           fetchComments();
         }
         console.error(error);
@@ -182,7 +183,7 @@ export default function PostDetail() {
               cancelMessage: "취소",
               handleSubmit: () => {
                 reportComment(comment.id);
-                alert("신고가 완료되었습니다.");
+                sweetToast("신고가 완료되었습니다.","warning");
                 closeModal();
               },
             });
