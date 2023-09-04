@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import defaultProfileImg from "../../../img/ProfileImg.svg";
 import defaultProfileImgWebp from "../../../img/webp/ProfileImg.webp";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,9 @@ import ProfileEditUI from "./ProfileEdit.presenter";
 import { resolveWebp } from "../../../library/checkWebpSupport";
 import { sweetToast } from "../../../library/sweetAlert/sweetAlert";
 import { profileImgCompression } from "../../../library/imgCompression";
+import { AccountContext } from "../../../context/AccountContext";
 export default function ProfileEdit() {
+  const { setAccount } = useContext(AccountContext);
   const [imgPreviewURL, setImgPreviewURL] = useState(null);
   const [uploadFile, setUploadFile] = useState(null);
 
@@ -43,9 +45,11 @@ export default function ProfileEdit() {
     const valid = imgValidation(file);
     if (!valid) return;
     // 이미지 압축후 이미지 (압축한 blob이미지, 미리보기 이미지) 반환
-    const {compressedFileBlob, preview} = await profileImgCompression(file);
+    const { compressedFileBlob, preview } = await profileImgCompression(file);
     // blob이미지 file 형식으로 변환
-    const compressedFile = new File([compressedFileBlob], file.name, { type: file.type });
+    const compressedFile = new File([compressedFileBlob], file.name, {
+      type: file.type,
+    });
     // 압축 이미지 미리보기 적용
     setImgPreviewURL(preview);
     // 업로드할 압축 이미지 적용
@@ -154,6 +158,7 @@ export default function ProfileEdit() {
           : imgPreviewURL,
       },
     });
+    setAccount(accountname);
     navigate(`/profile`);
   };
 
