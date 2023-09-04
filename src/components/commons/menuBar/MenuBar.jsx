@@ -9,6 +9,18 @@ import iconUser from "../../../img/icon-user.svg";
 import iconUserFill from "../../../img/icon-user-fill.svg";
 import iconPalette from "../../../img/icon-palette.svg";
 import iconPaletteFill from "../../../img/icon-palette-fill.svg";
+import iconHomeWebp from "../../../img/webp/icon-home.webp";
+import iconHomeFillWebp from "../../../img/webp/icon-home-fill.webp";
+import iconMessageWebp from "../../../img/webp/icon-message-circle.webp";
+import iconMessageFillWebp from "../../../img/webp/icon-message-circle-fill.webp";
+import iconEditWebp from "../../../img/webp/icon-edit.webp";
+import iconEditFillWebp from "../../../img/webp/icon-edit-fill.webp";
+import iconUserWebp from "../../../img/webp/icon-user.webp";
+import iconUserFillWebp from "../../../img/webp/icon-user-fill.webp";
+import iconPaletteWebp from "../../../img/webp/icon-palette.webp";
+import iconPaletteFillWebp from "../../../img/webp/icon-palette-fill.webp";
+import { resolveWebp } from "../../../library/checkWebpSupport";
+
 import { useLocation } from "react-router-dom";
 import {
   MenuBarWrapper,
@@ -24,24 +36,24 @@ export default function MenuBar() {
   const pathname = location.pathname;
   // 아이콘 default, fill을 키값으로 한 객체생성.
   const IconHome = {
-    default: iconHome,
-    fill: iconHomeFill,
+    default: resolveWebp(iconHomeWebp, iconHome),
+    fill: resolveWebp(iconHomeFillWebp, iconHomeFill),
   };
   const IconMessage = {
-    default: iconMessage,
-    fill: iconMessageFill,
+    default: resolveWebp(iconMessageWebp, iconMessage),
+    fill: resolveWebp(iconMessageFillWebp, iconMessageFill),
   };
   const IconEdit = {
-    default: iconEdit,
-    fill: iconEditFill,
+    default: resolveWebp(iconEditWebp, iconEdit),
+    fill: resolveWebp(iconEditFillWebp, iconEditFill),
   };
   const IconPalette = {
-    default: iconPalette,
-    fill: iconPaletteFill,
+    default: resolveWebp(iconPaletteWebp, iconPalette),
+    fill: resolveWebp(iconPaletteFillWebp, iconPaletteFill),
   };
   const IconUser = {
-    default: iconUser,
-    fill: iconUserFill,
+    default: resolveWebp(iconUserWebp, iconUser),
+    fill: resolveWebp(iconUserFillWebp, iconUserFill),
   };
 
   return (
@@ -55,8 +67,8 @@ export default function MenuBar() {
                 // url이 잘 이동되었을 때 아이콘 활성화
                 src={
                   pathname === "/post" || pathname === "/search"
-                    ? IconHome.fill
-                    : IconHome.default
+                    ? resolveWebp(iconHomeFillWebp, IconHome.fill)
+                    : resolveWebp(iconHomeWebp, IconHome.default)
                 }
                 alt="홈"
               />
@@ -78,8 +90,8 @@ export default function MenuBar() {
                 aria-label="채팅방 이동버튼"
                 src={
                   pathname === "/chatList"
-                    ? IconMessage.fill
-                    : IconMessage.default
+                    ? resolveWebp(iconMessageFillWebp, IconMessage.fill)
+                    : resolveWebp(iconMessageWebp, IconMessage.default)
                 }
                 alt="채팅"
               />
@@ -99,7 +111,9 @@ export default function MenuBar() {
               <Img
                 aria-label="게시물 작성버튼"
                 src={
-                  pathname === "/post/upload" ? IconEdit.fill : IconEdit.default
+                  pathname === "/post/upload"
+                    ? resolveWebp(iconEditFillWebp, IconEdit.fill)
+                    : resolveWebp(iconEditWebp, IconEdit.default)
                 }
                 alt="게시물 작성"
               />
@@ -121,8 +135,8 @@ export default function MenuBar() {
                   aria-label="캔버스 버튼"
                   src={
                     pathname === `/drawing`
-                      ? IconPalette.fill
-                      : IconPalette.default
+                      ? resolveWebp(iconPaletteFillWebp, IconPalette.fill)
+                      : resolveWebp(iconPaletteWebp, IconPalette.default)
                   }
                   alt="캔버스"
                 />
@@ -144,8 +158,8 @@ export default function MenuBar() {
                 aria-label="프로필 버튼"
                 src={
                   pathname.includes("/profile")
-                    ? IconUser.fill
-                    : IconUser.default
+                    ? resolveWebp(iconUserFillWebp, IconUser.fill)
+                    : resolveWebp(iconUserWebp, IconUser.default)
                 }
                 alt="프로필"
               />
